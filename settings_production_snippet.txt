@@ -1,0 +1,37 @@
+# --- Production settings snippet (append/adapt in ops_suite/settings.py) ---
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load .env if present
+load_dotenv(BASE_DIR / ".env")
+
+SECRET_KEY = os.getenv("SECRET_KEY", "CHANGE_ME_IMMEDIATELY")
+DEBUG = os.getenv("DEBUG", "false").lower() in ("1", "true", "yes")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+
+# Static
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static_root"
+_static_dir = BASE_DIR / "static"
+if _static_dir.exists():
+    STATICFILES_DIRS = [ _static_dir ]
+
+# WhiteNoise
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # ... keep the rest of your middleware stack ...
+] + [m for m in MIDDLEWARE if m not in ("django.middleware.security.SecurityMiddleware","whitenoise.middleware.WhiteNoiseMiddleware")]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Security hardening (tweak as needed)
+CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "true").lower() in ("1","true","yes")
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "true").lower() in ("1","true","yes")
+SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "0"))  # set 31536000 in real prod
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv("SECURE_HSTS_INCLUDE_SUBDOMAINS", "false").lower() in ("1","true","yes")
+SECURE_HSTS_PRELOAD = os.getenv("SECURE_HSTS_PRELOAD", "false").lower() in ("1","true","yes")
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "false").lower() in ("1","true","yes")
