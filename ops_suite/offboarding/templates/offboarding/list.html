@@ -1,0 +1,58 @@
+{% extends "transitions/base.html" %}
+{% block title %}Offboarding Records - OPS Suite{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3">Offboarding Records</h1>
+    <div>
+      <a class="btn btn-secondary" href="/transitions/">View Transitions</a>
+      <a class="btn btn-primary" href="{{ seed_url }}">Seed Demo Data</a>
+    </div>
+  </div>
+
+  {% if records %}
+    <div class="card shadow-sm">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Email</th>
+              <th>Project</th>
+              <th>Offboard Date</th>
+              <th>Reason</th>
+              <th>Handover</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in records %}
+              <tr>
+                <td>{{ record.developer_email }}</td>
+                <td>{{ record.project }}</td>
+                <td>{{ record.offboard_date|date:"M j, Y" }}</td>
+                <td>{{ record.reason|default:"—" }}</td>
+                <td>
+                  {% if record.handover_complete %}
+                    <span class="badge bg-success">Complete</span>
+                  {% else %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                  {% endif %}
+                </td>
+                <td>{{ record.notes|default:"—" }}</td>
+                <td>
+                  <a class="btn btn-sm btn-outline-primary" href="{% url 'offboarding:detail' record.pk %}">View</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% else %}
+    <div class="text-center py-5 bg-white border rounded">
+      <h2 class="h5">No offboarding records yet.</h2>
+      <p class="text-muted">Seed demo data to review sample offboarding workflows.</p>
+      <a class="btn btn-primary" href="{{ seed_url }}">Seed Demo Data</a>
+    </div>
+  {% endif %}
+{% endblock %}

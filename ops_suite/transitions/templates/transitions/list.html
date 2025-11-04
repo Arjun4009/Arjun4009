@@ -1,0 +1,73 @@
+{% extends "transitions/base.html" %}
+{% block title %}Transition Sheets - OPS Suite{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3">Transition Sheets</h1>
+    <div>
+      <a class="btn btn-secondary" href="/offboarding/">View Offboarding</a>
+      <a class="btn btn-primary" href="{% url 'transitions:seed' %}">Seed Demo Data</a>
+    </div>
+  </div>
+
+  {% if sheets %}
+    <div class="row g-3">
+      {% for sheet in sheets %}
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+              <div>
+                <h2 class="h5 mb-0">{{ sheet.name }}</h2>
+                <small class="text-muted">Created {{ sheet.created_at|date:"M j, Y H:i" }}</small>
+              </div>
+              <a class="btn btn-outline-primary" href="{% url 'transitions:detail' sheet.pk %}">View Detail</a>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Email</th>
+                      <th>Prev</th>
+                      <th>New</th>
+                      <th>Eff Date</th>
+                      <th>End</th>
+                      <th>Manager</th>
+                      <th>Emails</th>
+                      <th>Reference</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for row in sheet.rows.all %}
+                      <tr>
+                        <td>{{ row.developer_email }}</td>
+                        <td>{{ row.previous_project|default:"—" }}</td>
+                        <td>{{ row.new_project }}</td>
+                        <td>{{ row.effective_date|date:"M j, Y"|default:"—" }}</td>
+                        <td>{{ row.end_date|date:"M j, Y"|default:"—" }}</td>
+                        <td>{{ row.receiving_manager|default:"—" }}</td>
+                        <td>
+                          {% if row.email_sent %}
+                            <span class="badge bg-success">Sent</span>
+                          {% else %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                          {% endif %}
+                        </td>
+                        <td>{{ row.reference|default:"—" }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5 bg-white border rounded">
+      <h2 class="h5">No transition sheets yet.</h2>
+      <p class="text-muted">Seed demo data to get started.</p>
+      <a class="btn btn-primary" href="{% url 'transitions:seed' %}">Seed Demo Data</a>
+    </div>
+  {% endif %}
+{% endblock %}

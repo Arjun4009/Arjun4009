@@ -1,0 +1,9 @@
+{% extends "transitions/base.html" %}
+{% block title %}Transition Seeded - OPS Suite{% endblock %}
+{% block content %}
+  <div class="text-center py-5 bg-white border rounded">
+    <h1 class="h4 mb-3">Demo transition sheet ready!</h1>
+    <p class="mb-4">{{ sheet.name }} is now available with demo rows.</p>
+    <a class="btn btn-primary" href="{{ list_url }}">Return to Transitions</a>
+  </div>
+{% endblock %}

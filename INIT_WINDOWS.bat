@@ -5,4 +5,4 @@ if not exist "%SCRIPT_DIR%" (
     echo [ERROR] scripts folder is missing.
     exit /b 1
 )
-call "%SCRIPT_DIR%\START_PROD.bat" %*
+call "%SCRIPT_DIR%\INIT_WINDOWS.bat" %*
